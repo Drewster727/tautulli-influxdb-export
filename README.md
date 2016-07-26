@@ -5,7 +5,9 @@ This script will query your PlexPy to pull basic stats and store them in influxd
 I suggest you intall the script as a service to boot with your OS.
 
 ## Dependencies
+  * PlexPy (https://github.com/drzoidberg33/plexpy)
   * Python
+  * InfluxDB (https://github.com/influxdata/influxdb)
   * InfluxDB Python Client (https://github.com/influxdata/influxdb-python)
     - install on linux via 'apt-get install python-influxdb'
 
