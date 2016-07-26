@@ -48,6 +48,8 @@ I suggest you intall the script as a service to boot with your OS.
     - # Audio Transcode Streams (Playing)
     - # Audio Direct Play Streams
     - # Audio Direct Play Streams (Playing)
+  * Users
+    - Current Streaming Users Location Data (via IP lookup)
   * Home Page Stats
     - # Concurrent Users
     - # Concurrent Users w/ different IP addresses
