@@ -26,7 +26,7 @@ I suggest you intall the script as a service to boot with your OS.
 ## Example
 
   ```
-  python /path/to/plexpy_export_influxdb.py --plexpyhost <host> --plexpyapikey <key>
+  python /path/to/plexpy_influxdb_export.py --plexpyhost <host> --plexpyapikey <key>
   ```
 
 ## Exported Data
