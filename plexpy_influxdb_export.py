@@ -4,16 +4,18 @@
 import time
 import argparse # for arg parsing...
 import json # for parsing json
-import urllib2 # for calling the api
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from multiprocessing import Process
 from datetime import datetime # for obtaining the curren time and formatting it
 from influxdb import InfluxDBClient # via apt-get install python-influxdb
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress unverified cert warnings
 
 plexpy_url_format = '{0}://{1}:{2}/api/v2?apikey={3}'
 
 def get_activity(plexpy_url,influxdb_client):
         try:
-		data = json.load(urllib2.urlopen('{0}{1}'.format(plexpy_url, '&cmd=get_activity')))
+		data = json.load(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_activity'), verify=False).text)
 
 		if data:
 					total_stream_count = int(data['response']['data']['stream_count'])
@@ -58,7 +60,7 @@ def get_activity(plexpy_url,influxdb_client):
 
 def get_users(plexpy_url,influxdb_client):
         try:
-                data = json.load(urllib2.urlopen('{0}{1}'.format(plexpy_url, '&cmd=get_users')))
+                data = json.load(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).text)
 
                 if data:
                                         users = data['response']['data']
