@@ -23,4 +23,6 @@ This script will query your PlexPy to pull basic stats and store them in influxd
 ## Use-Case
   With this data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
   
+  ![alt tag](https://cloud.githubusercontent.com/assets/4528753/17122931/7176e2aa-52a5-11e6-8ff1-89ab6a8e7f82.png)
+  
   
