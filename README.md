@@ -7,7 +7,7 @@ I suggest you intall the script as a service to boot with your OS.
 ## Dependencies
   * Python
   * InfluxDB Python Client (https://github.com/influxdata/influxdb-python)
-    - install on linux via 'apt-get install influxdb-python'
+    - install on linux via 'apt-get install python-influxdb'
 
 ## Parameters
   * --interval (in seconds, default: 5)
