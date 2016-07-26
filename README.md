@@ -50,6 +50,7 @@ I suggest you intall the script as a service to boot with your OS.
     - # Audio Direct Play Streams (Playing)
   * Home Page Stats
     - # Concurrent Users
+    - # Concurrent Users w/ different IP addresses
   * Library Stats
     - # Movies
     - # TV Shows
