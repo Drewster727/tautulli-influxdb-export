@@ -51,8 +51,8 @@ I suggest you intall the script as a service to boot with your OS.
   * Users
     - Current Streaming Users Location Data (via IP lookup)
   * Home Page Stats
-    - # Concurrent Users
-    - # Concurrent Users w/ different IP addresses
+    - # Concurrent Streams
+    - # Concurrent Streams w/ different IP addresses
   * Library Stats
     - # Movies
     - # TV Shows
