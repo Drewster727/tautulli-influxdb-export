@@ -39,6 +39,19 @@ I suggest you intall the script as a service to boot with your OS.
     - # Total Users
     - # Home Users
   * more to come...
+  
+### To Do:
+  * Activity
+    - # Audio Transcode Streams
+    - # Audio Transcode Streams (Playing)
+    - # Audio Direct Play Streams
+    - # Audio Direct Play Streams (Playing)
+  * Home Page Stats
+    - # Concurrent Users
+  * Library Stats
+    - # Movies
+    - # TV Shows
+    - # Albums
 
 ## Use-Case
   With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
