@@ -1,6 +1,6 @@
 # plexpy-influxdb-export
 
-This script will query your PlexPy to pull basic stats and store them in influxdb. Stay tuned for further additions!
+This script will query PlexPy to pull basic stats and store them in influxdb. Stay tuned for further additions!
 
 I suggest you intall the script as a service to boot with your OS.
 
