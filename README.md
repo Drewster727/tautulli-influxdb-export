@@ -23,7 +23,7 @@ I suggest you intall the script as a service to boot with your OS.
   ```
   
 ## Use-Case
-  With this data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
+  With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
   
   ![alt tag](https://cloud.githubusercontent.com/assets/4528753/17122931/7176e2aa-52a5-11e6-8ff1-89ab6a8e7f82.png)
   
