@@ -6,7 +6,7 @@ I suggest you intall the script as a service to boot with your OS.
 
 ## Parameters
   * --interval (in seconds, default: 5)
-  * --plexpywebprotocol (default: http, alternative: https)
+  * --plexpywebprotocol (http/https, default: http)
   * --plexpyhost (default, localhost)
   * --plexpyport (default: 8181)
   * --plexpyapikey (required, default: empty)
