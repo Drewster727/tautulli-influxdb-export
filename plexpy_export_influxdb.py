@@ -27,7 +27,7 @@ def get_activity(plexpy_url,influxdb_client):
 					direct_stream_playing_count = 0
 
 					for s in sessions:
-						if s['video_decision'] == 'direct': # direct = 'video_decision' == 'direct' ?
+						if s['video_decision'] == 'direct play':
 							direct_stream_count += 1
 							if s['state'] == 'playing':
 								direct_stream_playing_count += 1
