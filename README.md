@@ -26,7 +26,20 @@ I suggest you intall the script as a service to boot with your OS.
   ```
   python /path/to/plexpy_export_influxdb.py --plexpyhost <host> --plexpyapikey <key>
   ```
-  
+
+## Exported Data
+  * Activity
+    - # Total Streams
+    - # Total Streams (Playing)
+    - # Transcode Streams
+    - # Transcode Streams (Playing)
+    - # Direct Play Streams
+    - # Direct Play Streams (Playing)
+  * Users
+    - # Total Users
+    - # Home Users
+  * more to come...
+
 ## Use-Case
   With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
   
