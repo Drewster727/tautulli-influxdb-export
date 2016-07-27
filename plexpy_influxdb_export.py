@@ -95,11 +95,9 @@ def init_exporting(interval, plexpy_url, influxdb_client):
 	while True:
 		getactivity = Process(target=get_activity, args=(plexpy_url,influxdb_client,))
 		getactivity.start()
-    		getactivity.join()
 
     		getusers = Process(target=get_users, args=(plexpy_url,influxdb_client,))
     		getusers.start()
-    		getusers.join()
 
 		time.sleep(interval)
 
