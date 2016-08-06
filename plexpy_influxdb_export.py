@@ -11,12 +11,13 @@ from datetime import datetime # for obtaining the curren time and formatting it
 from influxdb import InfluxDBClient # via apt-get install python-influxdb
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress unverified cert warnings
 
-plexpy_url_format = '{0}://{1}:{2}/api/v2?apikey={3}'
+plexpy_url_format = '{0}://{1}:{2}{4}/api/v2?apikey={3}'
 
 def get_activity(plexpy_url,influxdb_client):
         try:
-		data = json.load(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_activity'), verify=False).text)
-
+		req = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_activity'), verify=False).text
+		data = json.load(req)
+		
 		if data:
 					total_stream_count = int(data['response']['data']['stream_count'])
 
@@ -61,7 +62,7 @@ def get_activity(plexpy_url,influxdb_client):
 
 def get_users(plexpy_url,influxdb_client):
         try:
-                data = json.load(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).text)
+                data = json.loads(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).text)
 
                 if data:
                                         users = data['response']['data']
@@ -104,16 +105,22 @@ def init_exporting(interval, plexpy_url, influxdb_client):
 
 		time.sleep(interval)
 
-def get_url(protocol,host,port,apikey):
-	return plexpy_url_format.format(protocol,host,port,apikey)
+def get_url(protocol,host,port,apikey,baseurl):
+	base = ""
+	if baseurl:
+		base = "/{}".format(baseurl)
+		
+	return plexpy_url_format.format(protocol,host,port,apikey,base)
 
 def parse_args():
+	
     parser = argparse.ArgumentParser(description='Export plexpy data to influxdb')
     parser.add_argument('--interval', type=int, required=False, default=5, help='Interval of export in seconds')
     parser.add_argument('--plexpywebprotocol', type=str, required=False, default="http", help='PlexPy web protocol (http)')
     parser.add_argument('--plexpyhost', type=str, required=False, default="localhost", help='PlexPy host (test.com))')
     parser.add_argument('--plexpyport', type=int, required=False, default=8181, help='PlexPy port')
     parser.add_argument('--plexpyapikey', type=str, required=True, default="", help='PlexPy API key')
+    parser.add_argument('--plexpybaseurl', type=str, required=False, default="", help='Base/Root url for PlexPy')
     parser.add_argument('--influxdbhost', type=str, required=False, default="localhost", help='InfluxDB host')
     parser.add_argument('--influxdbport', type=int, required=False, default=8086, help='InfluxDB port')
     parser.add_argument('--influxdbuser', type=str, required=False, default="", help='InfluxDB user')
@@ -122,8 +129,9 @@ def parse_args():
     return parser.parse_args()
 
 if __name__ == '__main__':
+    print "Started"
     args = parse_args()
-    plexpy_url = get_url(args.plexpywebprotocol, args.plexpyhost, args.plexpyport, args.plexpyapikey)
+    plexpy_url = get_url(args.plexpywebprotocol, args.plexpyhost, args.plexpyport, args.plexpyapikey, args.plexpybaseurl)
     influxdb_client = InfluxDBClient(args.influxdbhost, args.influxdbport, args.influxdbuser, args.influxdbpassword, args.influxdbdatabase)
     create_database(influxdb_client, args.influxdbdatabase)
     init_exporting(args.interval, plexpy_url, influxdb_client)
