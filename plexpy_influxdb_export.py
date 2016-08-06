@@ -62,7 +62,7 @@ def get_activity(plexpy_url,influxdb_client):
 
 def get_users(plexpy_url,influxdb_client):
         try:
-                data = json.loads(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).text)
+                data = json.load(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).text)
 
                 if data:
                                         users = data['response']['data']
