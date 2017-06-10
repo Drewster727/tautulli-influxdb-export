@@ -17,6 +17,7 @@ I suggest you intall the script as a service to boot with your OS.
   * --plexpyhost (default, localhost)
   * --plexpyport (default: 8181)
   * --plexpyapikey (required, default: empty)
+  * --plexpybaseurl (default: empty)
   * --influxdbhost (default: localhost)
   * --influxdbport (default: 8086)
   * --influxdbuser (default: empty)
