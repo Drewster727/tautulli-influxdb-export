@@ -1,0 +1,10 @@
+[Unit]
+Description=PlexPy2InfluxDB Service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python <path-to-git-clone>/plexpy_influxdb_export.py --plexpyhost <host> --plexpyapikey <apikey> --influxdbuser <user> --influxdbpassword <password> --influxdbhost <host>
+
+[Install]
+WantedBy=multi-user.target

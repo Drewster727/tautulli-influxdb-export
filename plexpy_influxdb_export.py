@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 
 import time
@@ -14,106 +13,107 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress un
 plexpy_url_format = '{0}://{1}:{2}{4}/api/v2?apikey={3}'
 
 def get_activity(plexpy_url,influxdb_client):
-        try:
-		req = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_activity'), verify=False).text
-		data = json.load(req)
-		
-		if data:
-					total_stream_count = int(data['response']['data']['stream_count'])
+    try:
+        data = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_activity'), verify=False).json()
+        
+        if data:
+            total_stream_count = int(data['response']['data']['stream_count'])
+        
+            # loop over the streams
+            sessions = data['response']['data']['sessions']
+            total_stream_playing_count = 0
+            transcode_stream_count = 0
+            transcode_stream_playing_count = 0
+            direct_stream_count = 0
+            direct_stream_playing_count = 0
+        
+            for s in sessions:
+                if s['video_decision'] == 'direct play':
+                    direct_stream_count += 1
+                    if s['state'] == 'playing':
+                        direct_stream_playing_count += 1
+                else: # transcode = 'video_decision' == 'copy' or 'transcode'
+                    transcode_stream_count += 1
+                    if s['state'] == 'playing':
+                        transcode_stream_playing_count += 1
+                if s['state'] == 'playing':
+                    total_stream_playing_count += 1
+        
+            json_body = [
+                    {
+                            "measurement": "get_activity",
+                            "time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                            "fields" : {
+                                    "stream_count": total_stream_count,
+                                    "stream_playing_count": total_stream_playing_count,
+                                    "stream_transcode_count": transcode_stream_count,
+                                    "stream_transcode_playing_count": transcode_stream_playing_count,
+                                    "stream_direct_count": direct_stream_count,
+                                    "stream_direct_playing_count": direct_stream_playing_count
+                            }
+                    }
+            ]
 
-					# loop over the streams
-					sessions = data['response']['data']['sessions']
-					total_stream_playing_count = 0
-					transcode_stream_count = 0
-					transcode_stream_playing_count = 0
-					direct_stream_count = 0
-					direct_stream_playing_count = 0
+            influxdb_client.write_points(json_body)
 
-					for s in sessions:
-						if s['video_decision'] == 'direct play':
-							direct_stream_count += 1
-							if s['state'] == 'playing':
-								direct_stream_playing_count += 1
-						else: # transcode = 'video_decision' == 'copy' or 'transcode'
-							transcode_stream_count += 1
-							if s['state'] == 'playing':
-								transcode_stream_playing_count += 1
-						if s['state'] == 'playing':
-							total_stream_playing_count += 1
-
-					json_body = [
-							{
-									"measurement": "get_activity",
-									"time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-									"fields" : {
-											"stream_count": total_stream_count,
-											"stream_playing_count": total_stream_playing_count,
-											"stream_transcode_count": transcode_stream_count,
-											"stream_transcode_playing_count": transcode_stream_playing_count,
-											"stream_direct_count": direct_stream_count,
-											"stream_direct_playing_count": direct_stream_playing_count
-									}
-							}
-					]
-					influxdb_client.write_points(json_body)
-        except Exception,e: 
-          print str(e)
-          pass
+    except Exception,e: 
+        print str(e)
+        pass
 
 def get_users(plexpy_url,influxdb_client):
-        try:
-                data = json.load(requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).text)
-
-                if data:
-                                        users = data['response']['data']
-					total_users = len(users)
- 					total_home_users = 0
-
-					for s in users:
-                                                if s['is_home_user'] == '1':
-                                                        total_home_users += 1
-
-                                        json_body = [
-                                                        {
-                                                                        "measurement": "get_users",
-                                                                        "time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-                                                                        "fields" : {
-                                                                                        "user_count": total_users,
-											"home_user_count": total_home_users
-                                                                        }
-                                                        }
-                                        ]
-                                        influxdb_client.write_points(json_body)
-        except Exception,e: 
-          print str(e)
-          pass
+    try:
+        data = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).json()
+    
+        if data:
+            users = data['response']['data']
+            total_users = len(users)
+            total_home_users = 0
+    
+            for s in users:
+                if s['is_home_user'] == '1':
+                    total_home_users += 1
+    
+            json_body = [
+                {
+                    "measurement": "get_users",
+                    "time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    "fields" : {
+                        "user_count": total_users,
+                        "home_user_count": total_home_users
+                    }
+                }
+            ]
+            
+            influxdb_client.write_points(json_body)
+    except Exception,e: 
+        print str(e)
+        pass
 
 def create_database(influxdb_client, database):
-	try:
-		influxdb_client.query('CREATE DATABASE IF NOT EXISTS {0}'.format(database))
-	except Exception,e: 
-          print str(e)
-	  pass
-
+    try:
+        influxdb_client.query('CREATE DATABASE {0}'.format(database))
+    except Exception,e: 
+        print str(e)
+    pass
+    
 def init_exporting(interval, plexpy_url, influxdb_client):
-	while True:
-		getactivity = Process(target=get_activity, args=(plexpy_url,influxdb_client,))
-		getactivity.start()
-
-    		getusers = Process(target=get_users, args=(plexpy_url,influxdb_client,))
-    		getusers.start()
-
-		time.sleep(interval)
-
+    while True:
+        getactivity = Process(target=get_activity, args=(plexpy_url,influxdb_client,))
+        getactivity.start()
+    
+        getusers = Process(target=get_users, args=(plexpy_url,influxdb_client,))
+        getusers.start()
+    
+        time.sleep(interval)
+    
 def get_url(protocol,host,port,apikey,baseurl):
-	base = ""
-	if baseurl:
-		base = "/{}".format(baseurl)
-		
-	return plexpy_url_format.format(protocol,host,port,apikey,base)
+    base = ""
+    if baseurl:
+        base = "/{}".format(baseurl)
+        
+    return plexpy_url_format.format(protocol,host,port,apikey,base)
 
 def parse_args():
-	
     parser = argparse.ArgumentParser(description='Export plexpy data to influxdb')
     parser.add_argument('--interval', type=int, required=False, default=5, help='Interval of export in seconds')
     parser.add_argument('--plexpywebprotocol', type=str, required=False, default="http", help='PlexPy web protocol (http)')
