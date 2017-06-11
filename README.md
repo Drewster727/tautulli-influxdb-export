@@ -32,32 +32,32 @@ I suggest you intall the script as a service to boot with your OS.
 
 ## Exported Data
   * Activity
-    - # Total Streams
-    - # Total Streams (Playing)
-    - # Transcode Streams
-    - # Transcode Streams (Playing)
-    - # Direct Play Streams
-    - # Direct Play Streams (Playing)
+    - *#* Total Streams
+    - *#* Total Streams (Playing)
+    - *#* Transcode Streams
+    - *#* Transcode Streams (Playing)
+    - *#* Direct Play Streams
+    - *#* Direct Play Streams (Playing)
   * Users
-    - # Total Users
-    - # Home Users
+    - *#* Total Users
+    - *#* Home Users
   * more to come...
   
 ### To Do:
   * Activity
-    - # Audio Transcode Streams
-    - # Audio Transcode Streams (Playing)
-    - # Audio Direct Play Streams
-    - # Audio Direct Play Streams (Playing)
+    - *#* Audio Transcode Streams
+    - *#* Audio Transcode Streams (Playing)
+    - *#* Audio Direct Play Streams
+    - *#* Audio Direct Play Streams (Playing)
   * Users
     - Current Streaming Users Location Data (via IP lookup)
   * Home Page Stats
-    - # Concurrent Streams
-    - # Concurrent Streams w/ different IP addresses
+    - *#* Concurrent Streams
+    - *#* Concurrent Streams w/ different IP addresses
   * Library Stats
-    - # Movies
-    - # TV Shows
-    - # Albums
+    - *#* Movies
+    - *#* TV Shows
+    - *#* Albums
 
 ## Use-Case
   With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
