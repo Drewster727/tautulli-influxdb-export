@@ -56,7 +56,7 @@ def get_activity(plexpy_url,influxdb_client):
 
             influxdb_client.write_points(json_body)
 
-    except Exception,e: 
+    except Exception as e: 
         print str(e)
         pass
 
@@ -85,14 +85,14 @@ def get_users(plexpy_url,influxdb_client):
             ]
             
             influxdb_client.write_points(json_body)
-    except Exception,e: 
+    except Exception as e: 
         print str(e)
         pass
 
 def create_database(influxdb_client, database):
     try:
         influxdb_client.query('CREATE DATABASE {0}'.format(database))
-    except Exception,e: 
+    except Exception as e: 
         print str(e)
     pass
     
