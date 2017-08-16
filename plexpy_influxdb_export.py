@@ -106,7 +106,7 @@ def get_libraries(plexpy_url,influxdb_client):
                     "fields" : {
                         "section_name": l['section_name'],
                         "section_type": l['section_type'],
-                        "count": l['count'],
+                        "count": num(l.get('count', 0)),
                         "child_count": num(l.get('child_count', 0))
                     }
                 })
