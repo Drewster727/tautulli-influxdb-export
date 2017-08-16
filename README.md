@@ -41,6 +41,8 @@ I suggest you intall the script as a service to boot with your OS.
   * Users
     - *#* Total Users
     - *#* Home Users
+  * Libraries
+    - *#* Total Items Per Library
   * more to come...
   
 ### To Do:
@@ -54,10 +56,6 @@ I suggest you intall the script as a service to boot with your OS.
   * Home Page Stats
     - *#* Concurrent Streams
     - *#* Concurrent Streams w/ different IP addresses
-  * Library Stats
-    - *#* Movies
-    - *#* TV Shows
-    - *#* Albums
 
 ## Use-Case
   With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
