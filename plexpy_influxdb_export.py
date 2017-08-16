@@ -6,7 +6,7 @@ import json # for parsing json
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from multiprocessing import Process
-from datetime import datetime # for obtaining the curren time and formatting it
+from datetime import datetime, timedelta # for obtaining the curren time and formatting it
 from influxdb import InfluxDBClient # via apt-get install python-influxdb
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress unverified cert warnings
 
@@ -89,6 +89,39 @@ def get_users(plexpy_url,influxdb_client):
         print str(e)
         pass
 
+def get_libraries(plexpy_url,influxdb_client):
+    try:
+        data = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_libraries'), verify=False).json()
+    
+        if data:
+            libraries = data['response']['data']
+            utcnow = datetime.utcnow()
+            json_body = []
+
+            for l in libraries:
+                utcnow = utcnow + timedelta(milliseconds=1)
+                json_body.append({
+                    "measurement": "get_libraries",
+                    "time": utcnow.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                    "fields" : {
+                        "section_name": l['section_name'],
+                        "section_type": l['section_type'],
+                        "count": l['count'],
+                        "child_count": num(l.get('child_count', 0))
+                    }
+                })
+            
+            influxdb_client.write_points(json_body)
+    except Exception as e: 
+        print str(e)
+        pass
+
+def num(s):
+    try:
+        return int(s)
+    except ValueError:
+        return float(s)
+
 def create_database(influxdb_client, database):
     try:
         influxdb_client.query('CREATE DATABASE {0}'.format(database))
@@ -103,6 +136,9 @@ def init_exporting(interval, plexpy_url, influxdb_client):
     
         getusers = Process(target=get_users, args=(plexpy_url,influxdb_client,))
         getusers.start()
+    
+        getlibs = Process(target=get_libraries, args=(plexpy_url,influxdb_client,))
+        getlibs.start()
     
         time.sleep(interval)
     
