@@ -41,6 +41,8 @@ I suggest you intall the script as a service to boot with your OS.
   * Users
     - *#* Total Users
     - *#* Home Users
+    - *#* Users currently streaming concurrently
+    - *#* Users currently streaming conurrently (with different IP addresses)
   * Libraries
     - *#* Total Items Per Library
   * more to come...
@@ -53,9 +55,6 @@ I suggest you intall the script as a service to boot with your OS.
     - *#* Audio Direct Play Streams (Playing)
   * Users
     - Current Streaming Users Location Data (via IP lookup)
-  * Home Page Stats
-    - *#* Concurrent Streams
-    - *#* Concurrent Streams w/ different IP addresses
 
 ## Use-Case
   With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
