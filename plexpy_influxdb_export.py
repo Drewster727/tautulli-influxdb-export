@@ -25,8 +25,10 @@ def get_activity(plexpy_url,influxdb_client):
             total_stream_playing_count = 0
             transcode_stream_count = 0
             transcode_stream_playing_count = 0
-            direct_stream_count = 0
-            direct_stream_playing_count = 0
+            direct_play_stream_count = 0
+            direct_play_stream_playing_count = 0
+            direct_stream_stream_count = 0
+            direct_stream_stream_playing_count = 0
             concurrent_stream_user_count = 0
             concurrent_stream_user_diffip_count = 0
 
@@ -42,9 +44,13 @@ def get_activity(plexpy_url,influxdb_client):
                     users[su] = [ip]
 
                 if s['video_decision'] == 'direct play':
-                    direct_stream_count += 1
+                    direct_play_stream_count += 1
                     if s['state'] == 'playing':
-                        direct_stream_playing_count += 1
+                        direct_play_stream_playing_count += 1
+                elif s['video_decision'] == 'direct stream':
+                    direct_stream_stream_count += 1
+                    if s['state'] == 'playing':
+                        direct_stream_stream_playing_count += 1
                 else: # transcode = 'video_decision' == 'copy' or 'transcode'
                     transcode_stream_count += 1
                     if s['state'] == 'playing':
@@ -66,8 +72,10 @@ def get_activity(plexpy_url,influxdb_client):
                                     "stream_playing_count": total_stream_playing_count,
                                     "stream_transcode_count": transcode_stream_count,
                                     "stream_transcode_playing_count": transcode_stream_playing_count,
-                                    "stream_direct_count": direct_stream_count,
-                                    "stream_direct_playing_count": direct_stream_playing_count,
+                                    "stream_directplay_count": direct_play_stream_count,
+                                    "stream_directplay_playing_count": direct_play_stream_playing_count,
+                                    "stream_directstream_count": direct_stream_stream_count,
+                                    "stream_directstream_playing_count": direct_stream_stream_playing_count,
                                     "user_concurrent_count": concurrent_stream_user_count,
                                     "user_concurrent_diffip_count": concurrent_stream_user_diffip_count
                             }
