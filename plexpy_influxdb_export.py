@@ -66,18 +66,21 @@ def get_activity(plexpy_url,influxdb_client):
                 else:
                     users[su] = [ip]
 
-                if s['video_decision'] == 'direct play':
+                playing = s['decision'] == 'playing'
+                if s['transcode_decision'] == 'direct play':
                     direct_play_stream_count += 1
-                    if s['state'] == 'playing':
+                    if playing:
                         direct_play_stream_playing_count += 1
-                elif s['video_decision'] == 'direct stream':
-                    direct_stream_stream_count += 1
-                    if s['state'] == 'playing':
-                        direct_stream_stream_playing_count += 1
-                else: # transcode = 'video_decision' == 'copy' or 'transcode'
-                    transcode_stream_count += 1
-                    if s['state'] == 'playing':
-                        transcode_stream_playing_count += 1
+                else:
+                    if s['video_decision'] == 'copy':
+                        direct_stream_stream_count += 1
+                        if playing:
+                            direct_stream_stream_playing_count += 1
+                    else: # transcode = 'transcode'
+                        transcode_stream_count += 1
+                        if playing:
+                            transcode_stream_playing_count += 1
+                            
                 if s['state'] == 'playing':
                     total_stream_playing_count += 1
 
