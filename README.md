@@ -1,11 +1,11 @@
-# plexpy-influxdb-export
+# tautulli-influxdb-export
 
-This script will query PlexPy to pull basic stats and store them in influxdb. Stay tuned for further additions!
+This script will query Tautulli to pull basic stats and store them in influxdb. Stay tuned for further additions!
 
 I suggest you intall the script as a service to boot with your OS.
 
 ## Dependencies
-  * PlexPy (https://github.com/drzoidberg33/plexpy)
+  * Tautulli (aka PlexPy) (https://github.com/Tautulli/Tautulli)
   * Python (v2.7.x)
   * InfluxDB (https://github.com/influxdata/influxdb)
   * InfluxDB Python Client (https://github.com/influxdata/influxdb-python)
