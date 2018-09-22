@@ -1,9 +1,10 @@
+#!/usr/bin/python
 from __future__ import print_function
 from builtins import str
-#!/usr/bin/python
 
+import os
 import time
-import argparse # for arg parsing...
+import configargparse # for arg parsing...
 import json # for parsing json
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -23,18 +24,41 @@ def main():
     init_exporting(args.interval, plexpy_url, influxdb_client)
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Export plexpy data to influxdb')
-    parser.add_argument('--interval', type=int, required=False, default=5, help='Interval of export in seconds')
-    parser.add_argument('--plexpywebprotocol', type=str, required=False, default="http", help='PlexPy web protocol (http)')
-    parser.add_argument('--plexpyhost', type=str, required=False, default="localhost", help='PlexPy host (test.com))')
-    parser.add_argument('--plexpyport', type=int, required=False, default=8181, help='PlexPy port')
-    parser.add_argument('--plexpyapikey', type=str, required=True, default="", help='PlexPy API key')
-    parser.add_argument('--plexpybaseurl', type=str, required=False, default="", help='Base/Root url for PlexPy')
-    parser.add_argument('--influxdbhost', type=str, required=False, default="localhost", help='InfluxDB host')
-    parser.add_argument('--influxdbport', type=int, required=False, default=8086, help='InfluxDB port')
-    parser.add_argument('--influxdbuser', type=str, required=False, default="", help='InfluxDB user')
-    parser.add_argument('--influxdbpassword', type=str, required=False, default="", help='InfluxDB password')
-    parser.add_argument('--influxdbdatabase', type=str, required=False, default="plexpy", help='InfluxDB database')
+    parser = configargparse.ArgumentParser(
+        description='Export plexpy data to influxdb')
+    parser.add_argument('--interval', type=int, required=False,
+                        env_var='INTERVAL', default=5,
+                        help='Interval of export in seconds')
+    parser.add_argument('--plexpywebprotocol', type=str, required=False,
+                        env_var='PLEXPYWEBPROTOCOL', default="http",
+                        help='PlexPy web protocol (http)')
+    parser.add_argument('--plexpyhost', type=str, required=False,
+                        env_var='PLEXPYHOST', default="localhost",
+                        help='PlexPy host (test.com))')
+    parser.add_argument('--plexpyport', type=int, required=False,
+                        env_var='PLEXPYPORT',
+                        default=8181, help='PlexPy port')
+    parser.add_argument('--plexpyapikey', type=str, required=True,
+                        env_var='PLEXPYAPIKEY', default="",
+                        help='PlexPy API key')
+    parser.add_argument('--plexpybaseurl', type=str, required=False,
+                        env_var='PLEXPYBASEURL', default='',
+                        help='Base/Root url for PlexPy')
+    parser.add_argument('--influxdbhost', type=str, required=False,
+                        env_var='INFLUXDBHOST', default="localhost",
+                        help='InfluxDB host')
+    parser.add_argument('--influxdbport', type=int, required=False,
+                        env_var='INFLUXDBPORT', default=8086,
+                        help='InfluxDB port')
+    parser.add_argument('--influxdbuser', type=str, required=False,
+                        env_var='INFLUXDBUSER', default="",
+                        help='InfluxDB user')
+    parser.add_argument('--influxdbpassword', type=str, required=False,
+                        env_var='INFLUXDBPASSWORD', default="",
+                        help='InfluxDB password')
+    parser.add_argument('--influxdbdatabase', type=str, required=False,
+                        env_var='INFLUXDBDATABASE', default="plexpy",
+                        help='InfluxDB database')
     return parser.parse_args()
 
 def get_activity(plexpy_url,influxdb_client):

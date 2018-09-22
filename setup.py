@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Drewster727/tautulli-influxdb-export",
     packages=setuptools.find_packages(),
-    install_requires=['requests', 'influxdb'],
+    install_requires=['requests', 'influxdb', 'configargparse'],
     scripts=['plexpy_influxdb_export.py'],
     classifiers=[
         "Programming Language :: Python :: 3",
