@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import str
 #!/usr/bin/python
 
 import time
@@ -13,7 +15,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress un
 plexpy_url_format = '{0}://{1}:{2}{4}/api/v2?apikey={3}'
 
 def main():
-    print "Started"
+    print("Started")
     args = parse_args()
     plexpy_url = get_url(args.plexpywebprotocol, args.plexpyhost, args.plexpyport, args.plexpyapikey, args.plexpybaseurl)
     influxdb_client = InfluxDBClient(args.influxdbhost, args.influxdbport, args.influxdbuser, args.influxdbpassword, args.influxdbdatabase)
@@ -59,7 +61,7 @@ def get_activity(plexpy_url,influxdb_client):
                 # check for concurrent streams
                 su = s['user']
                 ip = s['ip_address']
-                if users.has_key(su):
+                if su in users:
                     concurrent_stream_user_count += 1
                     if ip not in users[su]:
                         users[su].append(ip)
@@ -85,7 +87,7 @@ def get_activity(plexpy_url,influxdb_client):
                     total_stream_playing_count += 1
 
             # determine how many concurrent users with diff IPs we have
-            for k,v in users.items():
+            for k,v in list(users.items()):
                 if len(v) > 1:
                     concurrent_stream_user_diffip_count += 1
 
@@ -111,7 +113,7 @@ def get_activity(plexpy_url,influxdb_client):
             influxdb_client.write_points(json_body)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         pass
 
 def get_users(plexpy_url,influxdb_client):
@@ -140,7 +142,7 @@ def get_users(plexpy_url,influxdb_client):
 
             influxdb_client.write_points(json_body)
     except Exception as e:
-        print str(e)
+        print(str(e))
         pass
 
 def get_libraries(plexpy_url,influxdb_client):
@@ -167,7 +169,7 @@ def get_libraries(plexpy_url,influxdb_client):
 
             influxdb_client.write_points(json_body)
     except Exception as e:
-        print str(e)
+        print(str(e))
         pass
 
 def num(s):
@@ -180,7 +182,7 @@ def create_database(influxdb_client, database):
     try:
         influxdb_client.query('CREATE DATABASE {0}'.format(database))
     except Exception as e:
-        print str(e)
+        print(str(e))
     pass
 
 def init_exporting(interval, plexpy_url, influxdb_client):
