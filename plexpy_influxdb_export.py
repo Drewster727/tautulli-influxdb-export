@@ -1,7 +1,10 @@
 #!/usr/bin/python
+from __future__ import print_function
+from builtins import str
 
+import os
 import time
-import argparse # for arg parsing...
+import configargparse # for arg parsing...
 import json # for parsing json
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -13,7 +16,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress un
 plexpy_url_format = '{0}://{1}:{2}{4}/api/v2?apikey={3}'
 
 def main():
-    print "Started"
+    print("Started")
     args = parse_args()
     plexpy_url = get_url(args.plexpywebprotocol, args.plexpyhost, args.plexpyport, args.plexpyapikey, args.plexpybaseurl)
     influxdb_client = InfluxDBClient(args.influxdbhost, args.influxdbport, args.influxdbuser, args.influxdbpassword, args.influxdbdatabase)
@@ -21,18 +24,41 @@ def main():
     init_exporting(args.interval, plexpy_url, influxdb_client)
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Export plexpy data to influxdb')
-    parser.add_argument('--interval', type=int, required=False, default=5, help='Interval of export in seconds')
-    parser.add_argument('--plexpywebprotocol', type=str, required=False, default="http", help='PlexPy web protocol (http)')
-    parser.add_argument('--plexpyhost', type=str, required=False, default="localhost", help='PlexPy host (test.com))')
-    parser.add_argument('--plexpyport', type=int, required=False, default=8181, help='PlexPy port')
-    parser.add_argument('--plexpyapikey', type=str, required=True, default="", help='PlexPy API key')
-    parser.add_argument('--plexpybaseurl', type=str, required=False, default="", help='Base/Root url for PlexPy')
-    parser.add_argument('--influxdbhost', type=str, required=False, default="localhost", help='InfluxDB host')
-    parser.add_argument('--influxdbport', type=int, required=False, default=8086, help='InfluxDB port')
-    parser.add_argument('--influxdbuser', type=str, required=False, default="", help='InfluxDB user')
-    parser.add_argument('--influxdbpassword', type=str, required=False, default="", help='InfluxDB password')
-    parser.add_argument('--influxdbdatabase', type=str, required=False, default="plexpy", help='InfluxDB database')
+    parser = configargparse.ArgumentParser(
+        description='Export plexpy data to influxdb')
+    parser.add_argument('--interval', type=int, required=False,
+                        env_var='INTERVAL', default=5,
+                        help='Interval of export in seconds')
+    parser.add_argument('--plexpywebprotocol', type=str, required=False,
+                        env_var='PLEXPYWEBPROTOCOL', default="http",
+                        help='PlexPy web protocol (http)')
+    parser.add_argument('--plexpyhost', type=str, required=False,
+                        env_var='PLEXPYHOST', default="localhost",
+                        help='PlexPy host (test.com))')
+    parser.add_argument('--plexpyport', type=int, required=False,
+                        env_var='PLEXPYPORT',
+                        default=8181, help='PlexPy port')
+    parser.add_argument('--plexpyapikey', type=str, required=True,
+                        env_var='PLEXPYAPIKEY', default="",
+                        help='PlexPy API key')
+    parser.add_argument('--plexpybaseurl', type=str, required=False,
+                        env_var='PLEXPYBASEURL', default='',
+                        help='Base/Root url for PlexPy')
+    parser.add_argument('--influxdbhost', type=str, required=False,
+                        env_var='INFLUXDBHOST', default="localhost",
+                        help='InfluxDB host')
+    parser.add_argument('--influxdbport', type=int, required=False,
+                        env_var='INFLUXDBPORT', default=8086,
+                        help='InfluxDB port')
+    parser.add_argument('--influxdbuser', type=str, required=False,
+                        env_var='INFLUXDBUSER', default="",
+                        help='InfluxDB user')
+    parser.add_argument('--influxdbpassword', type=str, required=False,
+                        env_var='INFLUXDBPASSWORD', default="",
+                        help='InfluxDB password')
+    parser.add_argument('--influxdbdatabase', type=str, required=False,
+                        env_var='INFLUXDBDATABASE', default="plexpy",
+                        help='InfluxDB database')
     return parser.parse_args()
 
 def get_activity(plexpy_url,influxdb_client):
@@ -59,7 +85,7 @@ def get_activity(plexpy_url,influxdb_client):
                 # check for concurrent streams
                 su = s['user']
                 ip = s['ip_address']
-                if users.has_key(su):
+                if su in users:
                     concurrent_stream_user_count += 1
                     if ip not in users[su]:
                         users[su].append(ip)
@@ -85,7 +111,7 @@ def get_activity(plexpy_url,influxdb_client):
                     total_stream_playing_count += 1
 
             # determine how many concurrent users with diff IPs we have
-            for k,v in users.items():
+            for k,v in list(users.items()):
                 if len(v) > 1:
                     concurrent_stream_user_diffip_count += 1
 
@@ -111,7 +137,7 @@ def get_activity(plexpy_url,influxdb_client):
             influxdb_client.write_points(json_body)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         pass
 
 def get_users(plexpy_url,influxdb_client):
@@ -140,7 +166,7 @@ def get_users(plexpy_url,influxdb_client):
 
             influxdb_client.write_points(json_body)
     except Exception as e:
-        print str(e)
+        print(str(e))
         pass
 
 def get_libraries(plexpy_url,influxdb_client):
@@ -167,7 +193,7 @@ def get_libraries(plexpy_url,influxdb_client):
 
             influxdb_client.write_points(json_body)
     except Exception as e:
-        print str(e)
+        print(str(e))
         pass
 
 def num(s):
@@ -180,7 +206,7 @@ def create_database(influxdb_client, database):
     try:
         influxdb_client.query('CREATE DATABASE {0}'.format(database))
     except Exception as e:
-        print str(e)
+        print(str(e))
     pass
 
 def init_exporting(interval, plexpy_url, influxdb_client):

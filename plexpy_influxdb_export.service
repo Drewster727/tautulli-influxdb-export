@@ -4,7 +4,12 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/usr/bin/python <path-to-git-clone>/plexpy_influxdb_export.py --plexpyhost <host> --plexpyapikey <apikey> --influxdbuser <user> --influxdbpassword <password> --influxdbhost <host>
+Environment=PLEXPYHOST=<host>
+Environment=PLEXPYAPIKEY=<apikey>
+Environment=INFLUXDBUSER=<user>
+Environment=INFLUXDBPASSWORD=<password>
+Environment=INFLUXDBHOST=<host>
+ExecStart=/usr/bin/python <path-to-git-clone>/plexpy_influxdb_export.py
 Restart=on-failure
 RestartSec=15s
 TimeoutSec=15s
