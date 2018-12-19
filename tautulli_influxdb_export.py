@@ -13,37 +13,37 @@ from datetime import datetime, timedelta # for obtaining the curren time and for
 from influxdb import InfluxDBClient # via apt-get install python-influxdb
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # suppress unverified cert warnings
 
-plexpy_url_format = '{0}://{1}:{2}{4}/api/v2?apikey={3}'
+tautulli_url_format = '{0}://{1}:{2}{4}/api/v2?apikey={3}'
 
 def main():
     print("Started")
     args = parse_args()
-    plexpy_url = get_url(args.plexpywebprotocol, args.plexpyhost, args.plexpyport, args.plexpyapikey, args.plexpybaseurl)
+    tautulli_url = get_url(args.tautulliwebprotocol, args.tautullihost, args.tautulliport, args.tautulliapikey, args.tautullibaseurl)
     influxdb_client = InfluxDBClient(args.influxdbhost, args.influxdbport, args.influxdbuser, args.influxdbpassword, args.influxdbdatabase)
     create_database(influxdb_client, args.influxdbdatabase)
-    init_exporting(args.interval, plexpy_url, influxdb_client)
+    init_exporting(args.interval, tautulli_url, influxdb_client)
 
 def parse_args():
     parser = configargparse.ArgumentParser(
-        description='Export plexpy data to influxdb')
+        description='Export tautulli data to influxdb')
     parser.add_argument('--interval', type=int, required=False,
                         env_var='INTERVAL', default=5,
                         help='Interval of export in seconds')
-    parser.add_argument('--plexpywebprotocol', type=str, required=False,
-                        env_var='PLEXPYWEBPROTOCOL', default="http",
-                        help='PlexPy web protocol (http)')
-    parser.add_argument('--plexpyhost', type=str, required=False,
-                        env_var='PLEXPYHOST', default="localhost",
-                        help='PlexPy host (test.com))')
-    parser.add_argument('--plexpyport', type=int, required=False,
-                        env_var='PLEXPYPORT',
-                        default=8181, help='PlexPy port')
-    parser.add_argument('--plexpyapikey', type=str, required=True,
-                        env_var='PLEXPYAPIKEY', default="",
-                        help='PlexPy API key')
-    parser.add_argument('--plexpybaseurl', type=str, required=False,
-                        env_var='PLEXPYBASEURL', default='',
-                        help='Base/Root url for PlexPy')
+    parser.add_argument('--tautulliwebprotocol', type=str, required=False,
+                        env_var='tautulliWEBPROTOCOL', default="http",
+                        help='tautulli web protocol (http)')
+    parser.add_argument('--tautullihost', type=str, required=False,
+                        env_var='tautulliHOST', default="localhost",
+                        help='tautulli host (test.com))')
+    parser.add_argument('--tautulliport', type=int, required=False,
+                        env_var='tautulliPORT',
+                        default=8181, help='tautulli port')
+    parser.add_argument('--tautulliapikey', type=str, required=True,
+                        env_var='tautulliAPIKEY', default="",
+                        help='tautulli API key')
+    parser.add_argument('--tautullibaseurl', type=str, required=False,
+                        env_var='tautulliBASEURL', default='',
+                        help='Base/Root url for tautulli')
     parser.add_argument('--influxdbhost', type=str, required=False,
                         env_var='INFLUXDBHOST', default="localhost",
                         help='InfluxDB host')
@@ -57,13 +57,13 @@ def parse_args():
                         env_var='INFLUXDBPASSWORD', default="",
                         help='InfluxDB password')
     parser.add_argument('--influxdbdatabase', type=str, required=False,
-                        env_var='INFLUXDBDATABASE', default="plexpy",
+                        env_var='INFLUXDBDATABASE', default="tautulli",
                         help='InfluxDB database')
     return parser.parse_args()
 
-def get_activity(plexpy_url,influxdb_client):
+def get_activity(tautulli_url,influxdb_client):
     try:
-        data = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_activity'), verify=False).json()
+        data = requests.get('{0}{1}'.format(tautulli_url, '&cmd=get_activity'), verify=False).json()
 
         if data:
             total_stream_count = int(data['response']['data']['stream_count'])
@@ -106,7 +106,7 @@ def get_activity(plexpy_url,influxdb_client):
                         transcode_stream_count += 1
                         if playing:
                             transcode_stream_playing_count += 1
-                            
+
                 if s['state'] == 'playing':
                     total_stream_playing_count += 1
 
@@ -140,9 +140,9 @@ def get_activity(plexpy_url,influxdb_client):
         print(str(e))
         pass
 
-def get_users(plexpy_url,influxdb_client):
+def get_users(tautulli_url,influxdb_client):
     try:
-        data = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_users'), verify=False).json()
+        data = requests.get('{0}{1}'.format(tautulli_url, '&cmd=get_users'), verify=False).json()
 
         if data:
             users = data['response']['data']
@@ -169,9 +169,9 @@ def get_users(plexpy_url,influxdb_client):
         print(str(e))
         pass
 
-def get_libraries(plexpy_url,influxdb_client):
+def get_libraries(tautulli_url,influxdb_client):
     try:
-        data = requests.get('{0}{1}'.format(plexpy_url, '&cmd=get_libraries'), verify=False).json()
+        data = requests.get('{0}{1}'.format(tautulli_url, '&cmd=get_libraries'), verify=False).json()
 
         if data:
             libraries = data['response']['data']
@@ -209,15 +209,15 @@ def create_database(influxdb_client, database):
         print(str(e))
     pass
 
-def init_exporting(interval, plexpy_url, influxdb_client):
+def init_exporting(interval, tautulli_url, influxdb_client):
     while True:
-        getactivity = Process(target=get_activity, args=(plexpy_url,influxdb_client,))
+        getactivity = Process(target=get_activity, args=(tautulli_url,influxdb_client,))
         getactivity.start()
 
-        getusers = Process(target=get_users, args=(plexpy_url,influxdb_client,))
+        getusers = Process(target=get_users, args=(tautulli_url,influxdb_client,))
         getusers.start()
 
-        getlibs = Process(target=get_libraries, args=(plexpy_url,influxdb_client,))
+        getlibs = Process(target=get_libraries, args=(tautulli_url,influxdb_client,))
         getlibs.start()
 
         time.sleep(interval)
@@ -227,7 +227,7 @@ def get_url(protocol,host,port,apikey,baseurl):
     if baseurl:
         base = "/{}".format(baseurl)
 
-    return plexpy_url_format.format(protocol,host,port,apikey,base)
-    
+    return tautulli_url_format.format(protocol,host,port,apikey,base)
+
 if __name__ == '__main__':
     main()

@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/Drewster727/tautulli-influxdb-export",
     packages=setuptools.find_packages(),
     install_requires=['requests', 'influxdb', 'configargparse'],
-    scripts=['plexpy_influxdb_export.py'],
+    scripts=['tautulli_influxdb_export.py'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

@@ -1,15 +1,15 @@
 [Unit]
-Description=PlexPy2InfluxDB Service
+Description=tautulli2InfluxDB Service
 After=multi-user.target
 
 [Service]
 Type=idle
-Environment=PLEXPYHOST=<host>
-Environment=PLEXPYAPIKEY=<apikey>
+Environment=TAUTULLIHOST=<host>
+Environment=TAUTULLIAPIKEY=<apikey>
 Environment=INFLUXDBUSER=<user>
 Environment=INFLUXDBPASSWORD=<password>
 Environment=INFLUXDBHOST=<host>
-ExecStart=/usr/bin/python <path-to-git-clone>/plexpy_influxdb_export.py
+ExecStart=/usr/bin/python <path-to-git-clone>/tautulli_influxdb_export.py
 Restart=on-failure
 RestartSec=15s
 TimeoutSec=15s

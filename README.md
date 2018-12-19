@@ -13,21 +13,21 @@ I suggest you intall the script as a service to boot with your OS.
 
 ## Parameters
   * --interval (in seconds, default: 5)
-  * --plexpywebprotocol (http/https, default: http)
-  * --plexpyhost (default, localhost)
-  * --plexpyport (default: 8181)
-  * --plexpyapikey (required, default: empty)
-  * --plexpybaseurl (default: empty)
+  * --tautulliwebprotocol (http/https, default: http)
+  * --tautullihost (default, localhost)
+  * --tautulliport (default: 8181)
+  * --tautulliapikey (required, default: empty)
+  * --tautullibaseurl (default: empty)
   * --influxdbhost (default: localhost)
   * --influxdbport (default: 8086)
   * --influxdbuser (default: empty)
   * --influxdbpassword (default: empty)
-  * --influxdbdatabase (default: plexpy)
+  * --influxdbdatabase (default: tautulli)
 
 ## Example
 
   ```
-  python /path/to/plexpy_influxdb_export.py --plexpyhost <host> --plexpyapikey <key>
+  python /path/to/tautulli_influxdb_export.py --tautullihost <host> --tautulliapikey <key>
   ```
 
 ## Exported Data
@@ -46,7 +46,7 @@ I suggest you intall the script as a service to boot with your OS.
   * Libraries
     - *#* Total Items Per Library
   * more to come...
-  
+
 ### To Do:
   * Activity
     - *#* Audio Transcode Streams
@@ -58,7 +58,5 @@ I suggest you intall the script as a service to boot with your OS.
 
 ## Use-Case
   With the data exported to influxdb, you can create some useful stats/graphs in graphing tools such as grafana (http://grafana.org/)
-  
+
   ![alt tag](https://cloud.githubusercontent.com/assets/4528753/17122931/7176e2aa-52a5-11e6-8ff1-89ab6a8e7f82.png)
-  
-  
