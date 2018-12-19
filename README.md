@@ -30,6 +30,14 @@ I suggest you intall the script as a service to boot with your OS.
   python /path/to/tautulli_influxdb_export.py --tautullihost <host> --tautulliapikey <key>
   ```
 
+## Docker Example
+
+  ```
+  cd <folder>
+  docker build -t tautulli_influxdb_export .
+  docker run -d --name=tautulli_influxdb_export --restart unless-stopped -e TAUTULLI_HOST=<host> -e TAUTULLI_KEY=<key> -e INFLUXDB_HOST=<influxdbhost> -e INFLUXDB_DB=<influxdbdatabase> tautulli_influxdb_export
+  ```
+
 ## Exported Data
   * Activity
     - *#* Total Streams
